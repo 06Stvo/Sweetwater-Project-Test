@@ -40,13 +40,13 @@ $misc = array();
 
 // Sort the comments based on topic
 foreach ($comments as $comment => $id) {
-    if (str_contains($comment, 'candy')) {
+    if (str_contains(strtolower($comment), 'candy')) {
         array_push($candy, $comment);
-    } elseif (str_contains($comment, 'calls')) {
+    } elseif (str_contains(strtolower($comment), 'call')) {
         array_push($calls, $comment);
-    } elseif (str_contains($comment, 'refer')) {
+    } elseif (str_contains(strtolower($comment), 'refer')) {
         array_push($refer, $comment);
-    } elseif (str_contains($comment, 'sign')) {
+    } elseif (str_contains(strtolower($comment), 'sign')) {
         array_push($signature, $comment);
     } else {
         array_push($misc, $comment);
@@ -72,15 +72,16 @@ function getList($topic)
         return $misc;
     }
 }
-
 function updateDate($comments)
 {
     foreach ($comments as $comment => $id) {
         if (preg_match('(\d{2}/\d{2}/\d{2})', $comment, $str)) {
             $date = $str[0];
-            echo "Date: " . $date . "<br>";
-        } else {
-            echo "NOT FOUND <br>";
+            $dateTime = DateTime::createFromFormat('m/d/y', $date);
+            $newDate = $dateTime->format('Y-m-d H:i:s');
+            global $conn;
+            $updateSql = "UPDATE sweetwater_test SET shipdate_expected = '$newDate' WHERE orderid = $id";
+            $updateResult = $conn->query($updateSql);
         }
     }
 }
