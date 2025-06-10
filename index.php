@@ -9,7 +9,7 @@
 
 <body>
     <h2> Welcome! </h2>
-    <p> Below is a text area that you can filter comments by what they are discussing. </p>
+    <p> Below is a filter to sort comments based on their topic. </p>
     <form action="index.php" method='get'>
         <label for="topic"> Choose a Filter: </label>
         <select name="topic">
