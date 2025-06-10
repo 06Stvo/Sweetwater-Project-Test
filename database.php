@@ -17,11 +17,16 @@ echo "Connected!" . "<br>";
 
 $sql = "SELECT orderid, comments FROM sweetwater_test";
 $result = $conn->query($sql);
+$comments = array();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo "orderid: " . $row["orderid"] . " | Comment: " . $row["comments"] . "<br>";
+        $comments[$row["comments"]] = $row["orderid"];
     }
 } else {
     echo "No Results";
+}
+
+foreach ($comments as $comment => $id) {
+    echo "$comment: $id <br>";
 }
