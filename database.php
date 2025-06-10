@@ -72,3 +72,15 @@ function getList($topic)
         return $misc;
     }
 }
+
+function updateDate($comments)
+{
+    foreach ($comments as $comment => $id) {
+        if (preg_match('(\d{2}/\d{2}/\d{2})', $comment, $str)) {
+            $date = $str[0];
+            echo "Date: " . $date . "<br>";
+        } else {
+            echo "NOT FOUND <br>";
+        }
+    }
+}

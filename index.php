@@ -33,4 +33,6 @@ $list = getList($topic);
 foreach ($list as $comment) {
     echo $comment . "<br>";
 }
+
+updateDate($comments);
 ?>
