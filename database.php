@@ -92,9 +92,8 @@ function updateDate($comments, $conn)
             $date = $str[0];
             $dateTime = DateTime::createFromFormat('m/d/y', $date);
             $newDate = $dateTime->format('Y-m-d H:i:s');
-            global $conn;
             $updateSql = "UPDATE sweetwater_test SET shipdate_expected = '$newDate' WHERE orderid = $id";
-            $updateResult = $conn->query($updateSql);
+            $updateResult = mysqli_query($conn, $updateSql);
         }
     }
 }

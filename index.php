@@ -17,6 +17,10 @@
     <form method="post">
         <input type="submit" name="getData" class="button" value="Get Data" />
     </form>
+    <p> Update Database: </p>
+    <form method="post">
+        <input type="submit" name="updateData" class="button" value="Update Data" />
+    </form>
     <p> Below is a filter to sort comments based on their topic. </p>
     <form action="index.php" method='get'>
         <label for="topic"> Choose a Filter: </label>
@@ -57,7 +61,13 @@ if (array_key_exists('topic', $_GET)) {
         echo $comment . "<br>";
     }
 }
+if (array_key_exists('updateData', $_POST)) {
+    if (!$conn) {
+        $conn = connectToDataBase();
+    }
+    updateDate($comments, $conn);
+}
 
 
-//updateDate($comments, $candy, $calls, $refer, $signature, $misc);
+
 ?>
