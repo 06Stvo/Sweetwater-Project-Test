@@ -92,8 +92,12 @@ function updateDate($comments, $conn)
             $date = $str[0];
             $dateTime = DateTime::createFromFormat('m/d/y', $date);
             $newDate = $dateTime->format('Y-m-d H:i:s');
-            $updateSql = "UPDATE sweetwater_test SET shipdate_expected = '$newDate' WHERE orderid = $id";
-            $updateResult = mysqli_query($conn, $updateSql);
+            try {
+                $updateSql = "UPDATE sweetwater_test SET shipdate_expected = '$newDate' WHERE orderid = $id";
+                $updateResult = mysqli_query($conn, $updateSql);
+            } catch (Exception $e) {
+                echo "Exception caught when querying to database :" . $e->getMessage();
+            }
         }
     }
 }
