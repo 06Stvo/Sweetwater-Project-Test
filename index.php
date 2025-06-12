@@ -9,6 +9,18 @@
 
 <body>
     <h2> Welcome! </h2>
+    <p>Connect to DataBase: </p>
+    <form method="post">
+        <input type="submit" name="connect" class="button" value="connectDB" />
+    </form>
+    <p> Query Database: </p>
+    <form method="post">
+        <input type="submit" name="getData" class="button" value="Get Data" />
+    </form>
+    <p> Update Database: </p>
+    <form method="post">
+        <input type="submit" name="updateData" class="button" value="Update Data" />
+    </form>
     <p> Below is a filter to sort comments based on their topic. </p>
     <form action="index.php" method='get'>
         <label for="topic"> Choose a Filter: </label>
@@ -26,13 +38,36 @@
 
 <?php
 include 'database.php';
-
-$topic = $_GET["topic"];
-$list = getList($topic);
-
-foreach ($list as $comment) {
-    echo $comment . "<br>";
+session_start();
+$conn = NULL;
+if (array_key_exists('connect', $_POST)) {
+    $conn = connectToDataBase();
+}
+if (array_key_exists('getData', $_POST)) {
+    if (!$conn) {
+        $conn = connectToDataBase();
+    }
+    queryData($conn, $comments);
+    $_SESSION['comments'] = $comments;
 }
 
-updateDate($comments);
+if (array_key_exists('topic', $_GET)) {
+    $comments = $_SESSION['comments'];
+    $topic = $_GET["topic"];
+    sortComments($comments, $candy, $calls, $refer, $signature, $misc);
+
+    $list = getList($topic, $candy, $calls, $refer, $signature, $misc);
+    foreach ($list as $comment) {
+        echo $comment . "<br>";
+    }
+}
+if (array_key_exists('updateData', $_POST)) {
+    if (!$conn) {
+        $conn = connectToDataBase();
+    }
+    updateDate($comments, $conn);
+}
+
+
+
 ?>
