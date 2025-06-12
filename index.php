@@ -34,7 +34,7 @@
 
 <?php
 include 'database.php';
-
+session_start();
 $conn = NULL;
 if (array_key_exists('connect', $_POST)) {
     $conn = connectToDataBase();
@@ -44,15 +44,20 @@ if (array_key_exists('getData', $_POST)) {
         $conn = connectToDataBase();
     }
     queryData($conn, $comments);
+    $_SESSION['comments'] = $comments;
+}
+
+if (array_key_exists('topic', $_GET)) {
+    $comments = $_SESSION['comments'];
+    $topic = $_GET["topic"];
     sortComments($comments, $candy, $calls, $refer, $signature, $misc);
+
+    $list = getList($topic, $candy, $calls, $refer, $signature, $misc);
+    foreach ($list as $comment) {
+        echo $comment . "<br>";
+    }
 }
 
-$topic = $_GET["topic"];
-$list = getList($topic, $candy, $calls, $refer, $signature, $misc);
-
-foreach ($list as $comment) {
-    echo $comment . "<br>";
-}
 
 //updateDate($comments, $candy, $calls, $refer, $signature, $misc);
 ?>

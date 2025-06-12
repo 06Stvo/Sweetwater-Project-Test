@@ -26,7 +26,7 @@ function connectToDataBase()
         if ($conn->connect_error) {
             die("Connection Failed: " . $conn->connect_error);
         }
-        echo "Connected!";
+        echo "Connected! <br>";
         return $conn;
     } catch (Exception $e) {
         echo "Exception caught when connecting to database :" . $e->getMessage();
@@ -52,7 +52,7 @@ function queryData(&$conn, &$comments)
     }
 }
 
-function sortComments($comments, $candy, $calls, $refer, $signature, $misc)
+function sortComments($comments, &$candy, &$calls, &$refer, &$signature, &$misc)
 {
     // Sort the comments based on topic
     foreach ($comments as $comment => $id) {
@@ -83,7 +83,7 @@ function getList($topic, $candy, $calls, $refer, $signature, $misc)
         return $signature;
     } elseif ($topic == 'misc') {
         return $misc;
-    }
+    } else return ["Error"];
 }
 function updateDate($comments, $conn)
 {
