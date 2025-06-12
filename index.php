@@ -9,6 +9,10 @@
 
 <body>
     <h2> Welcome! </h2>
+    <p>Connect to DataBase: </p>
+    <form method="post">
+        <input type="submit" name="connect" class="button" value="connectDB" />
+    </form>
     <p> Below is a filter to sort comments based on their topic. </p>
     <form action="index.php" method='get'>
         <label for="topic"> Choose a Filter: </label>
@@ -27,12 +31,17 @@
 <?php
 include 'database.php';
 
+$conn = NULL;
+if (array_key_exists('connect', $_POST)) {
+    $conn = connectToDataBase();
+}
+
 $topic = $_GET["topic"];
-$list = getList($topic);
+$list = getList($topic, $candy, $calls, $refer, $signature, $misc);
 
 foreach ($list as $comment) {
     echo $comment . "<br>";
 }
 
-updateDate($comments);
+updateDate($comments, $candy, $calls, $refer, $signature, $misc);
 ?>

@@ -1,36 +1,7 @@
 <?php
 
-// Store database information
-$servername = "localhost";
-$username = "root";
-$password = "";
-$db_name = "sweetwaterdb";
-$conn = "";
-
-// Connect to Database
-$conn = mysqli_connect($servername, $username, $password, $db_name);
-
-// Test Connection
-if ($conn->connect_error) {
-    die("Connection Failed: " . $conn->connect_error);
-}
-
-
-// Query the database to retreive the comments and order ids
-$sql = "SELECT orderid, comments FROM sweetwater_test";
-$result = $conn->query($sql);
-
 // Create Array for comments and ids to be stored in
 $comments = array();
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $comments[$row["comments"]] = $row["orderid"];
-    }
-} else {
-    echo "No Results";
-}
-
 // Created sorted arrays 
 $candy = array();
 $calls = array();
@@ -38,22 +9,68 @@ $refer = array();
 $signature = array();
 $misc = array();
 
-// Sort the comments based on topic
-foreach ($comments as $comment => $id) {
-    if (str_contains(strtolower($comment), 'candy')) {
-        array_push($candy, $comment);
-    } elseif (str_contains(strtolower($comment), 'call')) {
-        array_push($calls, $comment);
-    } elseif (str_contains(strtolower($comment), 'refer')) {
-        array_push($refer, $comment);
-    } elseif (str_contains(strtolower($comment), 'sign')) {
-        array_push($signature, $comment);
-    } else {
-        array_push($misc, $comment);
+
+function connectToDataBase()
+{
+    // Store database information
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $db_name = "sweetwaterdb";
+    $conn = "";
+
+    // Connect to Database
+    try {
+        $conn = mysqli_connect($servername, $username, $password, $db_name);
+        // Test Connection
+        if ($conn->connect_error) {
+            die("Connection Failed: " . $conn->connect_error);
+        }
+        echo "Connected!";
+        return $conn;
+    } catch (Exception $e) {
+        echo "Exception caught when connecting to database :" . $e->getMessage();
     }
 }
 
-function getList($topic)
+function queryData($conn, $comments)
+{
+
+    // Query the database to retreive the comments and order ids
+    $sql = "SELECT orderid, comments FROM sweetwater_test";
+    $result = $conn->query($sql);
+
+
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $comments[$row["comments"]] = $row["orderid"];
+        }
+    } else {
+        echo "No Results";
+    }
+}
+
+function sortComments($comments, $candy, $calls, $refer, $signature, $misc)
+{
+    // Sort the comments based on topic
+    foreach ($comments as $comment => $id) {
+        if (str_contains(strtolower($comment), 'candy')) {
+            array_push($candy, $comment);
+        } elseif (str_contains(strtolower($comment), 'call')) {
+            array_push($calls, $comment);
+        } elseif (str_contains(strtolower($comment), 'refer')) {
+            array_push($refer, $comment);
+        } elseif (str_contains(strtolower($comment), 'sign')) {
+            array_push($signature, $comment);
+        } else {
+            array_push($misc, $comment);
+        }
+    }
+}
+
+
+function getList($topic, $candy, $calls, $refer, $signature, $misc)
 {
     if ($topic == 'candy') {
         global $candy;
@@ -72,7 +89,7 @@ function getList($topic)
         return $misc;
     }
 }
-function updateDate($comments)
+function updateDate($comments, $conn)
 {
     foreach ($comments as $comment => $id) {
         if (preg_match('(\d{2}/\d{2}/\d{2})', $comment, $str)) {
