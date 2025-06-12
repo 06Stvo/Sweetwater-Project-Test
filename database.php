@@ -33,21 +33,22 @@ function connectToDataBase()
     }
 }
 
-function queryData($conn, $comments)
+function queryData(&$conn, &$comments)
 {
+    try {
+        // Query the database to retreive the comments and order ids
+        $sql = "SELECT orderid, comments FROM sweetwater_test";
+        $result = mysqli_query($conn, $sql);
 
-    // Query the database to retreive the comments and order ids
-    $sql = "SELECT orderid, comments FROM sweetwater_test";
-    $result = $conn->query($sql);
-
-
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $comments[$row["comments"]] = $row["orderid"];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $comments[$row["comments"]] = $row["orderid"];
+            }
+        } else {
+            echo "No Results";
         }
-    } else {
-        echo "No Results";
+    } catch (Exception $e) {
+        echo "Exception caught when querying to database :" . $e->getMessage();
     }
 }
 
@@ -73,19 +74,14 @@ function sortComments($comments, $candy, $calls, $refer, $signature, $misc)
 function getList($topic, $candy, $calls, $refer, $signature, $misc)
 {
     if ($topic == 'candy') {
-        global $candy;
         return $candy;
     } elseif ($topic == 'calls') {
-        global $calls;
         return $calls;
     } elseif ($topic == 'refer') {
-        global $refer;
         return $refer;
     } elseif ($topic == 'sign') {
-        global $signature;
         return $signature;
     } elseif ($topic == 'misc') {
-        global $misc;
         return $misc;
     }
 }

@@ -13,6 +13,10 @@
     <form method="post">
         <input type="submit" name="connect" class="button" value="connectDB" />
     </form>
+    <p> Query Database: </p>
+    <form method="post">
+        <input type="submit" name="getData" class="button" value="Get Data" />
+    </form>
     <p> Below is a filter to sort comments based on their topic. </p>
     <form action="index.php" method='get'>
         <label for="topic"> Choose a Filter: </label>
@@ -35,6 +39,13 @@ $conn = NULL;
 if (array_key_exists('connect', $_POST)) {
     $conn = connectToDataBase();
 }
+if (array_key_exists('getData', $_POST)) {
+    if (!$conn) {
+        $conn = connectToDataBase();
+    }
+    queryData($conn, $comments);
+    sortComments($comments, $candy, $calls, $refer, $signature, $misc);
+}
 
 $topic = $_GET["topic"];
 $list = getList($topic, $candy, $calls, $refer, $signature, $misc);
@@ -43,5 +54,5 @@ foreach ($list as $comment) {
     echo $comment . "<br>";
 }
 
-updateDate($comments, $candy, $calls, $refer, $signature, $misc);
+//updateDate($comments, $candy, $calls, $refer, $signature, $misc);
 ?>
